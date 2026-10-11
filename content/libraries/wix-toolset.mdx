@@ -24,6 +24,10 @@ The fee is paid by **sponsoring the wixtoolset GitHub organization** via [GitHub
 
 A **minimum annual revenue threshold of US $10,000** was added in **OSMF EULA v1.1** (February 2026), exempting hobbyists and very small organizations. If your organization does not generate revenue, or falls below the threshold, **no fee is due** and you can keep using the toolset for free.
 
+### WiX v7: explicit EULA acceptance
+
+**WiX v7.0.0 (April 2026)** ships with the **OSMF EULA v1.1** and makes acceptance **explicit**: the tooling refuses to build until the EULA is accepted, either interactively or through the `AcceptEula` MSBuild property in your `.wixproj` (intended for CI/CD). Expect CI pipelines to break on upgrade until that property is set.
+
 **Customers of FireGiant's WiX Developer Direct** commercial support do **not** pay the OSMF separately — it is included in their support agreement.
 
 ## What About WixSharp?
@@ -69,11 +73,16 @@ WiX authors true Windows Installer (`.msi`) packages, which is a niche most alte
     *   **Pros**: First-party, free, no scripting, produces real MSI.
     *   **Cons**: Limited feature set; tied to Visual Studio; awkward for complex/CI scenarios.
 
+6.  **[Parcel (Avalonia UI)](https://avaloniaui.net/parcel)**:
+    *   Cross-platform packaging tool from the Avalonia team (GUI and .NET CLI tool) that builds, signs and packages .NET apps: **NSIS** and **MSIX** on Windows, **DMG/PKG/ZIP** on macOS, **DEB/RPM** on Linux.
+    *   **Pros**: One tool for all three desktop platforms, built-in code signing, works with any .NET app (not only Avalonia), free community license for the GUI.
+    *   **Cons**: **Not open source** (proprietary, AvaloniaUI OÜ) and needs an AvaloniaUI Portal license key. The **CLI** — what you need for CI/CD — **requires a paid Avalonia Plus license**. Does **not** produce `.msi`.
+
 For modern app packaging, the free **[MSIX Packaging Tool](https://learn.microsoft.com/en-us/windows/msix/packaging-tool/tool-overview)** from Microsoft is also worth evaluating as a replacement for MSI entirely.
 
 ## Conclusion
 
-WiX Toolset's source stays open under MS-RL, but v6.0 attaches the Open Source Maintenance Fee to its binaries — revenue-generating organizations above ~$10k/year are expected to pay $10–$60/month via GitHub Sponsors. Hobbyists, small orgs, and FireGiant support customers are unaffected. Teams that don't want the obligation can pin to WiX v5 (and target it from WixSharp), or move to free alternatives like Inno Setup, NSIS, or Velopack depending on whether they truly need MSI output.
+WiX Toolset's source stays open under MS-RL, but v6.0 attaches the Open Source Maintenance Fee to its binaries — revenue-generating organizations above ~$10k/year are expected to pay $10–$60/month via GitHub Sponsors. Hobbyists, small orgs, and FireGiant support customers are unaffected. Teams that don't want the obligation can pin to WiX v5 (and target it from WixSharp), or move to free alternatives like Inno Setup, NSIS, or Velopack depending on whether they truly need MSI output. Parcel is an option for cross-platform packaging if a proprietary tool is acceptable.
 
 ## Links and References
 
@@ -89,3 +98,5 @@ WiX Toolset's source stays open under MS-RL, but v6.0 attaches the Open Source M
 *   Alternative: [Inno Setup](https://jrsoftware.org/isinfo.php)
 *   Alternative: [NSIS](https://nsis.sourceforge.io/)
 *   Alternative: [Velopack](https://github.com/velopack/velopack)
+*   Alternative: [Parcel (Avalonia UI)](https://avaloniaui.net/parcel)
+*   GitHub: [WiX releases (v7.0.0)](https://github.com/wixtoolset/wix/releases)
