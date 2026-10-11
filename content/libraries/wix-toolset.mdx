@@ -69,9 +69,9 @@ WiX authors true Windows Installer (`.msi`) packages, which is a niche most alte
     *   **Cons**: App-deployment focused — not a general-purpose MSI authoring tool.
 
 5.  **[Visual Studio Installer Projects](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2022InstallerProjects)**:
-    *   Microsoft's free VS extension for building basic MSI packages via a GUI.
+    *   Microsoft's free VS extension for building basic MSI packages via a GUI. The current *Installer Projects 2022* extension supports **Visual Studio 2022 and 2026**.
     *   **Pros**: First-party, free, no scripting, produces real MSI.
-    *   **Cons**: Limited feature set; tied to Visual Studio. `.vdproj` is not an MSBuild project, so it cannot be built with `dotnet build`/`msbuild` — CI needs a full Visual Studio install and `devenv.exe`.
+    *   **Cons**: Limited feature set; tied to Visual Studio. The `.vdproj` format never got an **SDK-style** version — it is not even an MSBuild project: `dotnet build` can't handle it and `msbuild` skips it with warning **MSB4078** ("project file is not supported by MSBuild"). The only way to build it is `devenv.exe /Build`, so CI agents need a full Visual Studio install plus the extension.
     *   **Troubled history**: Microsoft has dropped and revived this project type more than once, so it is a risky long-term bet:
         *   **March 2011**: Microsoft [announced](https://devblogs.microsoft.com/buckh/visual-studio-setup-projects-vdproj-will-not-ship-with-future-versions-of-vs/) that Setup projects (`.vdproj`) would not ship with future versions — VS 2010 was the last — and advised migrating to WiX or other tools.
         *   **Visual Studio 2012** shipped without them, pointing users to InstallShield Limited Edition instead.
@@ -85,7 +85,7 @@ WiX authors true Windows Installer (`.msi`) packages, which is a niche most alte
     *   **Pros**: One tool for all three desktop platforms, built-in code signing, works with any .NET app (not only Avalonia), free community license for the GUI.
     *   **Cons**: **Not open source** (proprietary, AvaloniaUI OÜ) and needs an AvaloniaUI Portal license key. The **CLI** — what you need for CI/CD — **requires a paid Avalonia Plus license**. Does **not** produce `.msi`.
 
-For modern app packaging, the free **[MSIX Packaging Tool](https://learn.microsoft.com/en-us/windows/msix/packaging-tool/tool-overview)** from Microsoft is also worth evaluating as a replacement for MSI entirely.
+For modern app packaging, the free **[MSIX Packaging Tool](https://learn.microsoft.com/en-us/windows/msix/packaging-tool/tool-overview)** from Microsoft is also worth evaluating as a replacement for MSI entirely. To produce MSIX packages from your own build, Visual Studio's **[Windows Application Packaging Project](https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-packaging-dot-net)** (`.wapproj`) packages WPF/WinForms/.NET desktop apps as MSIX and, unlike `.vdproj`, builds with `msbuild`.
 
 ## Conclusion
 
@@ -105,6 +105,8 @@ WiX Toolset's source stays open under MS-RL, but v6.0 attaches the Open Source M
 *   Alternative: [Inno Setup](https://jrsoftware.org/isinfo.php)
 *   Alternative: [NSIS](https://nsis.sourceforge.io/)
 *   Alternative: [Velopack](https://github.com/velopack/velopack)
+*   Visual Studio Marketplace: [Microsoft Visual Studio Installer Projects 2022 (VS 2022/2026)](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2022InstallerProjects)
+*   Microsoft Learn: [Package a desktop app with the Windows Application Packaging Project (MSIX)](https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-packaging-dot-net)
 *   Buck Hodges (Microsoft): [Visual Studio setup projects (vdproj) will not ship with future versions of VS (2011)](https://devblogs.microsoft.com/buckh/visual-studio-setup-projects-vdproj-will-not-ship-with-future-versions-of-vs/)
 *   Developer Community: [Installer projects are no longer built in](https://developercommunity.visualstudio.com/t/installer-projects-are-no-longer-built-in/439213)
 *   Black Marble: [The return of Visual Studio Setup projects (2014)](https://blogs.blackmarble.co.uk/rfennell/2014/04/23/the-return-of-visual-studio-setup-projects-just-because-you-can-use-them-should-you/)
