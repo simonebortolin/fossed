@@ -71,7 +71,12 @@ WiX authors true Windows Installer (`.msi`) packages, which is a niche most alte
 5.  **[Visual Studio Installer Projects](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2022InstallerProjects)**:
     *   Microsoft's free VS extension for building basic MSI packages via a GUI.
     *   **Pros**: First-party, free, no scripting, produces real MSI.
-    *   **Cons**: Limited feature set; tied to Visual Studio; awkward for complex/CI scenarios.
+    *   **Cons**: Limited feature set; tied to Visual Studio. `.vdproj` is not an MSBuild project, so it cannot be built with `dotnet build`/`msbuild` — CI needs a full Visual Studio install and `devenv.exe`.
+    *   **Troubled history**: Microsoft has dropped and revived this project type more than once, so it is a risky long-term bet:
+        *   **Visual Studio 2012** removed Setup projects entirely, pointing users to InstallShield Limited Edition instead.
+        *   **April 2014**: after strong pushback, they came back as the out-of-band *Microsoft Visual Studio Installer Projects* extension for VS 2013 — essentially the VS 2010 project type with minor fixes.
+        *   **Visual Studio 2022** again shipped (November 2021) without support; a separate *Installer Projects 2022* extension only arrived later, starting as a 0.1.0 preview in December 2021.
+        *   It remains a separately versioned extension per VS release, never part of the product itself — every new Visual Studio version is a fresh dependency on Microsoft choosing to keep it alive.
 
 6.  **[Parcel (Avalonia UI)](https://avaloniaui.net/parcel)**:
     *   Cross-platform packaging tool from the Avalonia team (GUI and .NET CLI tool) that builds, signs and packages .NET apps: **NSIS** and **MSIX** on Windows, **DMG/PKG/ZIP** on macOS, **DEB/RPM** on Linux.
@@ -98,5 +103,7 @@ WiX Toolset's source stays open under MS-RL, but v6.0 attaches the Open Source M
 *   Alternative: [Inno Setup](https://jrsoftware.org/isinfo.php)
 *   Alternative: [NSIS](https://nsis.sourceforge.io/)
 *   Alternative: [Velopack](https://github.com/velopack/velopack)
+*   Black Marble: [The return of Visual Studio Setup projects (2014)](https://blogs.blackmarble.co.uk/rfennell/2014/04/23/the-return-of-visual-studio-setup-projects-just-because-you-can-use-them-should-you/)
+*   Microsoft Q&A: [Visual Studio Installer Projects & VS2022](https://learn.microsoft.com/en-us/answers/a/658943)
 *   Alternative: [Parcel (Avalonia UI)](https://avaloniaui.net/parcel)
 *   GitHub: [WiX releases (v7.0.0)](https://github.com/wixtoolset/wix/releases)
