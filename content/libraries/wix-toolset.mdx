@@ -73,8 +73,10 @@ WiX authors true Windows Installer (`.msi`) packages, which is a niche most alte
     *   **Pros**: First-party, free, no scripting, produces real MSI.
     *   **Cons**: Limited feature set; tied to Visual Studio. `.vdproj` is not an MSBuild project, so it cannot be built with `dotnet build`/`msbuild` — CI needs a full Visual Studio install and `devenv.exe`.
     *   **Troubled history**: Microsoft has dropped and revived this project type more than once, so it is a risky long-term bet:
-        *   **Visual Studio 2012** removed Setup projects entirely, pointing users to InstallShield Limited Edition instead.
+        *   **March 2011**: Microsoft [announced](https://devblogs.microsoft.com/buckh/visual-studio-setup-projects-vdproj-will-not-ship-with-future-versions-of-vs/) that Setup projects (`.vdproj`) would not ship with future versions — VS 2010 was the last — and advised migrating to WiX or other tools.
+        *   **Visual Studio 2012** shipped without them, pointing users to InstallShield Limited Edition instead.
         *   **April 2014**: after strong pushback, they came back as the out-of-band *Microsoft Visual Studio Installer Projects* extension for VS 2013 — essentially the VS 2010 project type with minor fixes.
+        *   **Visual Studio 2019**: users again found that [installer projects were no longer built in](https://developercommunity.visualstudio.com/t/installer-projects-are-no-longer-built-in/439213); support came back only through a separate extension build for VS 2017/2019 ([example of the resulting breakage](https://learn.microsoft.com/en-us/answers/questions/224282/visual-studio-installer-projects-extension-not-wor)).
         *   **Visual Studio 2022** again shipped (November 2021) without support; a separate *Installer Projects 2022* extension only arrived later, starting as a 0.1.0 preview in December 2021.
         *   It remains a separately versioned extension per VS release, never part of the product itself — every new Visual Studio version is a fresh dependency on Microsoft choosing to keep it alive.
 
@@ -103,6 +105,8 @@ WiX Toolset's source stays open under MS-RL, but v6.0 attaches the Open Source M
 *   Alternative: [Inno Setup](https://jrsoftware.org/isinfo.php)
 *   Alternative: [NSIS](https://nsis.sourceforge.io/)
 *   Alternative: [Velopack](https://github.com/velopack/velopack)
+*   Buck Hodges (Microsoft): [Visual Studio setup projects (vdproj) will not ship with future versions of VS (2011)](https://devblogs.microsoft.com/buckh/visual-studio-setup-projects-vdproj-will-not-ship-with-future-versions-of-vs/)
+*   Developer Community: [Installer projects are no longer built in](https://developercommunity.visualstudio.com/t/installer-projects-are-no-longer-built-in/439213)
 *   Black Marble: [The return of Visual Studio Setup projects (2014)](https://blogs.blackmarble.co.uk/rfennell/2014/04/23/the-return-of-visual-studio-setup-projects-just-because-you-can-use-them-should-you/)
 *   Microsoft Q&A: [Visual Studio Installer Projects & VS2022](https://learn.microsoft.com/en-us/answers/a/658943)
 *   Alternative: [Parcel (Avalonia UI)](https://avaloniaui.net/parcel)
