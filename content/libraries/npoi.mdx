@@ -39,9 +39,9 @@ The fee is paid via [GitHub Sponsors](https://github.com/sponsors/tonyqus). Unde
 
 OSMF is not a source-license change — the code stays open source (Apache-2.0). Instead, it layers a **contractual payment obligation onto the compiled binaries** you consume from NuGet/GitHub. This differs from conventional open source, which places no financial obligation on users, and from the "go fully commercial" route taken by AutoMapper, MediatR, or MassTransit. You can still read the source, but using the official packaged builds in a revenue-generating context means agreeing to pay.
 
-## Pitfall: NPOI 2.7.4 pulls in a vulnerable ImageSharp 2.x
+## Pitfall: NPOI ≤ 2.7.x pulls in a vulnerable ImageSharp 2.x
 
-Pinning NPOI 2.7.4 is not a free lunch. Up to 2.7.x, NPOI depends on **[SixLabors.ImageSharp](/fossed/library/imagesharp) `>= 2.1.10`** (and SixLabors.Fonts `>= 1.0.1`) for image and font handling. All ImageSharp **2.x** releases, including [2.1.11](https://www.nuget.org/packages/SixLabors.ImageSharp/2.1.11) and the last 2.x release, 2.1.13, are flagged on NuGet as vulnerable. The advisories published in September 2026 affect every version from 2.0.0 up to 4.1.1:
+Pinning NPOI 2.7.4 is not a free lunch. Up to 2.7.x, NPOI depends on **[SixLabors.ImageSharp](/fossed/library/imagesharp) 2.x** (`>= 2.1.10` in 2.7.4, `>= 2.1.11` in 2.7.5 and 2.7.6) and SixLabors.Fonts `>= 1.0.1` for image and font handling. All ImageSharp **2.x** releases, up to and including the last one, [2.1.13](https://www.nuget.org/packages/SixLabors.ImageSharp/2.1.13), are flagged on NuGet as vulnerable. The advisories published in September 2026 affect every version from 2.0.0 up to 4.1.1:
 
 *   [GHSA-j3p4-wp97-rph4](https://github.com/advisories/GHSA-j3p4-wp97-rph4) (CVE-2026-106113, **high**): unchecked histogram index in `HistogramEqualization`
 *   [GHSA-j9gm-c75j-xc9q](https://github.com/advisories/GHSA-j9gm-c75j-xc9q) (CVE-2026-106110, **high**): TIFF CCITT T4 encoder writes past its output buffer
@@ -51,9 +51,9 @@ Pinning NPOI 2.7.4 is not a free lunch. Up to 2.7.x, NPOI depends on **[SixLabor
 
 The only patched release is **ImageSharp 4.1.2**, which is under the [Six Labors Split License](/fossed/library/imagesharp) (paid for organizations above US$1M annual revenue), not Apache-2.0. No patched 2.x release exists, and NuGet will not move you to a new major on its own: it resolves the lowest matching version (2.1.10) for NPOI's dependency.
 
-**Do not force ImageSharp 4.x under NPOI 2.7.4** (e.g. with a direct `PackageReference` or central package pinning). NPOI 2.7.4 was compiled against the ImageSharp 2.x API, and a major version bump means breaking changes. Even if the build succeeds, you risk `MissingMethodException` / `TypeLoadException` at runtime in the code paths that touch images or fonts. Overriding a transitive dependency across major versions is only reasonable for .NET platform packages (`System.*`, `Microsoft.Extensions.*`), which keep binary compatibility; it is not for third-party libraries like ImageSharp.
+**Do not force ImageSharp 4.x under NPOI 2.7.x** (e.g. with a direct `PackageReference` or central package pinning). NPOI 2.7.x was compiled against the ImageSharp 2.x API, and a major version bump means breaking changes. Even if the build succeeds, you risk `MissingMethodException` / `TypeLoadException` at runtime in the code paths that touch images or fonts. Overriding a transitive dependency across major versions is only reasonable for .NET platform packages (`System.*`, `Microsoft.Extensions.*`), which keep binary compatibility; it is not for third-party libraries like ImageSharp.
 
-In practice, staying on NPOI 2.7.4 means accepting a known-vulnerable transitive dependency (with `dotnet list package --vulnerable` and NuGet audit flagging it). The real fixes are upgrading to NPOI 2.8.x (and paying the OSMF fee) or migrating to one of the alternatives below.
+In practice, staying on any NPOI 2.7.x release means accepting a known-vulnerable transitive dependency (with `dotnet list package --vulnerable` and NuGet audit flagging it). The real fixes are upgrading to NPOI 2.8.x (and paying the OSMF fee) or migrating to one of the alternatives below.
 
 > For the full story of ImageSharp's move to the Six Labors Split License and its alternatives, see the **[ImageSharp page on FOSSED](/fossed/library/imagesharp)**.
 
@@ -62,7 +62,7 @@ NPOI **2.8.0** replaced ImageSharp with **SkiaSharp** (MIT), so this particular 
 ## What This Means For You
 
 *   Using **NPOI ≤ 2.7.4**: no fee, no LGPL contamination — but no further updates or security fixes on that line, and it depends on **ImageSharp 2.x**, which has known high-severity vulnerabilities (see above).
-*   Using **NPOI 2.7.5 / 2.7.6**: watch for the transitive **LGPL-3.0** dependency (NSax) if your organization restricts copyleft licenses.
+*   Using **NPOI 2.7.5 / 2.7.6**: watch for the transitive **LGPL-3.0** dependency (NSax) if your organization restricts copyleft licenses — and, like 2.7.4, they depend on the vulnerable **ImageSharp 2.x**.
 *   Using **NPOI ≥ 2.8.0**: NSax is gone, but revenue-generating users are expected to pay the **OSMF maintenance fee**.
 
 ## Background: `.xls`, `.xlsx` and ODF
@@ -116,7 +116,7 @@ NPOI is broad — it covers legacy `.xls`, modern `.xlsx`, and Word documents. N
 | **[EPPlus](/fossed/library/epplus)** | Polyform NC / commercial | — | Read/Write | Import/Export (`LoadFromText` / `SaveToText`) | — | — |
 | **OpenStandardLibrary** | MIT | — | Read/Write | Read/Write | Read/Write | — |
 
-If you still need to **write** legacy `.xls`, there is no free, permissively licensed replacement for NPOI's HSSF — either pin NPOI 2.7.4 or convert to `.xlsx`. For **reading** legacy files, ExcelDataReader covers `.xls` and can be combined with ClosedXML or MiniExcel for writing `.xlsx`.
+If you still need to **write** legacy `.xls`, there is no free, permissively licensed replacement for NPOI's HSSF — either pin NPOI 2.7.4 (with the ImageSharp caveat above) or convert to `.xlsx`. For **reading** legacy files, ExcelDataReader covers `.xls` and can be combined with ClosedXML or MiniExcel for writing `.xlsx`.
 
 **ODF** is a gap in the .NET open-source ecosystem. [OpenStandardLibrary](https://github.com/kupokev/open-standard-library) (MIT, .NET 8+) reads and writes `.ods`, `.xlsx` and delimited files, but it is a very young, single-maintainer project. The other options are copyleft or abandoned: [ODSReaderWriter](https://github.com/Zaretto/ODSReaderWriter) is GPL-2.0, and [AODL](https://www.nuget.org/packages/AODL) (`.ods`/`.odt`) is GPL-2.0, .NET Framework only and unmaintained since 2013. A pragmatic workaround is converting with LibreOffice in headless mode (`soffice --headless --convert-to xlsx file.ods`) and then using any of the OOXML libraries above.
 
@@ -132,7 +132,7 @@ NPOI's Apache-2.0 source has not changed, but two moves complicated its "free" s
 *   GitHub Discussion: [NPOI 2.8.0 Release Notes (#1751)](https://github.com/nissl-lab/npoi/discussions/1751)
 *   Medium: [What's New in NPOI 2.8.0: A New Chapter for Sustainable Open Source](https://tonyqus.medium.com/whats-new-in-npoi-2-8-0-a-new-chapter-for-sustainable-open-source-e0a9ae383a07)
 *   FOSSED: [SixLabors.ImageSharp licensing change](/fossed/library/imagesharp)
-*   NuGet: [SixLabors.ImageSharp 2.1.11 (vulnerable)](https://www.nuget.org/packages/SixLabors.ImageSharp/2.1.11)
+*   NuGet: [SixLabors.ImageSharp 2.1.13 (last 2.x, vulnerable)](https://www.nuget.org/packages/SixLabors.ImageSharp/2.1.13)
 *   Open Source Maintenance Fee: [For Consumers](https://opensourcemaintenancefee.org/consumers/)
 *   Similar model: [Mediator (martinothamar)](https://github.com/martinothamar/Mediator)
 *   Alternative: [ClosedXML](https://github.com/ClosedXML/ClosedXML)
